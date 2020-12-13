@@ -20,3 +20,5 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::post('products', [ProductsController::class, 'create']);
+
+Route::get('products', [ProductsController::class, 'rescue']);
