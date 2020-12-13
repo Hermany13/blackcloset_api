@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Responses;
 use App\Models\Products;
 use App\Services\Products\ProductsStoreData;
+use Illuminate\Support\Facades\DB;
 
 class ProductsController extends Controller
 {
@@ -20,5 +21,12 @@ class ProductsController extends Controller
             ProductsStoreData::run($request);
             return Responses::Success("Sucess!", $request);
         }
+    }
+
+    public function rescue()
+    {
+        $products = DB::table('products_data')->get();
+
+        return Responses::Success("Sucess!", $products);
     }
 }
