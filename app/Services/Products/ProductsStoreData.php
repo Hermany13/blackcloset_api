@@ -3,22 +3,23 @@
 namespace App\Services\Products;
 
 use App\Models\Products;
+use Str;
 
 class ProductsStoreData
 {
     public static function run(array $data)
     {
-            Products::create([
-                'name' => $data['name'],
-                'price' => $data['price'],
-                'size' => $data['size'],
-                'color' => $data['color'],
-                'category' => $data['category'],
-                'availability' => $data['availability'],
-                'status' => $data['status'],
-                'description' => $data['description'],
-                'image' => $data['image'],
-            ]);
+        Products::create([
+            'name' => $data['name'],
+            'slug' => Str::slug($data['name'], '-'),
+            'price' => $data['price'],
+            'offerPrice' => $data['offerPrice'],
+            'availability' => $data['availability'],
+            'status' => $data['status'],
+            'parcels' => $data['parcels'],
+            'description' => $data['description'],
+            'image' => $data['image'],
+            'isOffer' => $data['isOffer'],
+        ]);
     }
 }
-

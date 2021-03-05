@@ -13,13 +13,14 @@ class Products extends Model
 
     protected $fillable = [
         'name',
+        'slug',
         'price',
-        'size',
-        'color',
-        'category',
+        'offerPrice',
         'availability',
         'status',
+        'parcels',
         'description',
         'image',
+        'isOffer',
     ];
 }
