@@ -18,38 +18,14 @@ class ProductsController extends Controller
      */
     public function index(Request $request)
     {
-        $category = $request->input('category');
-        $color = $request->input('color');
-        $availability = $request->input('availability');
-        $status = $request->input('status');
         $id = $request->input('id');
 
-        if($category) {
-            $products = DB::table('products_data')->where('category',  $category)->get();
-            return Responses::Success("Products successfully redeemed by category!", $products);
-        }
-
-        if($color) {
-            $products = DB::table('products_data')->where('color',  $color)->get();
-            return Responses::Success("Products successfully redeemed by color!", $products);
-        }
-
-
-        if($availability != "") {
-            $products = DB::table('products_data')->where('availability',  $availability)->get();
-            return Responses::Success("Products successfully redeemed by availability!", $products);
-        }
-
-        if($status != "") {
-            $products = DB::table('products_data')->where('status',  $status)->get();
-            return Responses::Success("Products successfully redeemed by status!", $products);
-        }
-
-        if($id != "") {
+        // TODO MOVE GET BY ID TO store METHOD
+        if ($id != "") {
             $products = DB::table('products_data')->where('id',  $id)->get();
             return Responses::Success("Products successfully redeemed by ID!", $products);
         }
-            
+
         $products = DB::table('products_data')->get();
         return Responses::Success("Products successfully redeemed!", $products);
     }
@@ -62,7 +38,7 @@ class ProductsController extends Controller
      */
     public function store(Request $request)
     {
-        if(env('FAKE_REQUEST', 0) == 0) {
+        if (env('FAKE_REQUEST', 0) == 0) {
             ProductsStoreData::run($request->all());
             return Responses::Success("Product created with sucess!", $request->all());
         } else {
@@ -98,14 +74,15 @@ class ProductsController extends Controller
             ['id' => $id],
             [
                 'name' => $data['name'],
+                'slug' => $data['slug'],
                 'price' => $data['price'],
-                'size' => $data['size'],
-                'color' => $data['color'],
-                'category' => $data['category'],
+                'offerPrice' => $data['offerPrice'],
                 'availability' => $data['availability'],
                 'status' => $data['status'],
+                'parcels' => $data['parcels'],
                 'description' => $data['description'],
-                'image' => $data['image']
+                'image' => $data['image'],
+                'isOffer' => $data['isOffer'],
             ]
         );
 
