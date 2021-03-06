@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\api\CategoryController;
+use App\Http\Controllers\api\ProductHasCatController;
 use App\Http\Controllers\API\ProductsController;
 use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
@@ -24,6 +25,8 @@ Route::prefix('v1')->group(function () {
 
     Route::get('products', [ProductsController::class, 'index']);
 
+    Route::get('products/{id}', [ProductsController::class, 'show']);
+
     Route::get('categories', [CategoryController::class, 'index']);
 
     Route::get('categories/{id}', [CategoryController::class, 'show']);
@@ -34,6 +37,8 @@ Route::prefix('v1')->group(function () {
         Route::put('products/{id}', [ProductsController::class, 'update']);
 
         Route::delete('products/{id}', [ProductsController::class, 'destroy']);
+
+        Route::post('products/relationships/category/{id}', [ProductHasCatController::class, 'store']);
 
         Route::post('categories', [CategoryController::class, 'store']);
     });
