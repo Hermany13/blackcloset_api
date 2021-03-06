@@ -16,18 +16,28 @@ class ProductsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
-        $id = $request->input('id');
-
         // TODO MOVE GET BY ID TO store METHOD
-        if ($id != "") {
-            $products = DB::table('products_data')->where('id',  $id)->get();
-            return Responses::Success("Products successfully redeemed by ID!", $products);
-        }
+        // if ($id != "") {
+        //     $products = DB::table('products_data')->where('id',  $id)->get();
+        //     return Responses::Success("Products successfully redeemed by ID!", $products);
+        // }
 
         $products = DB::table('products_data')->get();
-        return Responses::Success("Products successfully redeemed!", $products);
+
+        $auxProd = [];
+        foreach ($products as $product) {
+            $relationships = DB::table('product_has_cat')->where('id_product', $product->id)->get();
+            $auxCat = [];
+            foreach ($relationships as $relation) {
+                array_push($auxCat, DB::table('categories')->where('id', $relation->id_category)->get()[0]);
+            }
+            $product->categories = $auxCat;
+            array_push($auxProd, $product);
+        }
+
+        return Responses::Success("Products successfully redeemed!", $auxProd);
     }
 
     /**
@@ -56,7 +66,15 @@ class ProductsController extends Controller
      */
     public function show($id)
     {
-        //
+        $product = DB::table('products_data')->where('id',  $id)->get()[0];
+        $relationships = DB::table('product_has_cat')->where('id_product', $product->id)->get();
+        $auxCat = [];
+        foreach ($relationships as $relation) {
+            array_push($auxCat, DB::table('categories')->where('id', $relation->id_category)->get()[0]);
+        }
+        $product->categories = $auxCat;
+
+        return Responses::Success("Product successfully redeemed!", $product);
     }
 
     /**
