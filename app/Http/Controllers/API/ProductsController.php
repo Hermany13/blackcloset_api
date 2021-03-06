@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Responses;
-use App\Models\Products;
+use App\Services\Categories\ProductHasCatStoreData;
 use App\Services\Products\ProductsStoreData;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -18,13 +18,7 @@ class ProductsController extends Controller
      */
     public function index()
     {
-        // TODO MOVE GET BY ID TO store METHOD
-        // if ($id != "") {
-        //     $products = DB::table('products_data')->where('id',  $id)->get();
-        //     return Responses::Success("Products successfully redeemed by ID!", $products);
-        // }
-
-        $products = DB::table('products_data')->get();
+        $products = DB::table('products_data')->where('status', '1')->get();
 
         $auxProd = [];
         foreach ($products as $product) {
@@ -48,14 +42,17 @@ class ProductsController extends Controller
      */
     public function store(Request $request)
     {
-        if (env('FAKE_REQUEST', 0) == 0) {
-            ProductsStoreData::run($request->all());
-            return Responses::Success("Product created with sucess!", $request->all());
-        } else {
-            $request = Products::factory()->make()->toArray();
-            ProductsStoreData::run($request);
-            return Responses::Success("Product created with sucess!", $request);
+        $categories_ids = $request->get('categories');
+        unset($request['categories']);
+
+        ProductsStoreData::run($request->all());
+        $id = DB::table('products_data')->orderBy('id', 'desc')->first();
+        foreach ($categories_ids as $cat_id) {
+            $data['id_category'] = $cat_id;
+            $data['id_product'] = $id->id;
+            ProductHasCatStoreData::run($data);
         }
+        return Responses::Success("Product created with sucess!", $request->all());
     }
 
     /**
@@ -67,6 +64,13 @@ class ProductsController extends Controller
     public function show($id)
     {
         $product = DB::table('products_data')->where('id',  $id)->get()[0];
+
+        if ($product->status == 0) {
+            $error['status'] = 'Error';
+            $error['message'] = 'Produto não existe';
+            return $error;
+        }
+
         $relationships = DB::table('product_has_cat')->where('id_product', $product->id)->get();
         $auxCat = [];
         foreach ($relationships as $relation) {
