@@ -56,7 +56,16 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $data = $request->all();
+
+        DB::table('categories')->updateOrInsert(
+            ['id' => $id],
+            [
+                'name' => $data['name'],
+            ]
+        );
+
+        return Responses::Success("Category updated with sucess!");
     }
 
     /**
