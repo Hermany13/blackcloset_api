@@ -98,13 +98,11 @@ class ProductsController extends Controller
                 'name' => $data['name'],
                 'slug' => $data['slug'],
                 'price' => $data['price'],
-                'offerPrice' => $data['offerPrice'],
                 'availability' => $data['availability'],
                 'status' => $data['status'],
                 'parcels' => $data['parcels'],
                 'description' => $data['description'],
                 'image' => $data['image'],
-                'isOffer' => $data['isOffer'],
             ]
         );
 
@@ -125,5 +123,20 @@ class ProductsController extends Controller
         );
 
         return Responses::Success("Product disabled with sucess!");
+    }
+
+    public function setOffer(Request $request, $id)
+    {
+        $data = $request->all();
+
+        DB::table('products_data')->updateOrInsert(
+            ['id' => $id],
+            [
+                'isOffer' => $data['isOffer'],
+                'offerPrice' => $data['offerPrice']
+            ]
+        );
+
+        return Responses::Success("Product offer init with sucess!");
     }
 }
