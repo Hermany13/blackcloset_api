@@ -4,6 +4,7 @@ namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Responses;
+use App\Models\ProductHasCat;
 use App\Services\Categories\ProductHasCatStoreData;
 use Illuminate\Http\Request;
 
@@ -72,8 +73,15 @@ class ProductHasCatController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
-        //
+        $cat_id = $request->get('category_id');
+        $deletedRows = ProductHasCat::where('id_product', $id)->where('id_category', $cat_id)->delete();
+
+        if ($deletedRows == 0) {
+            return Responses::Success("Relationship does not exist!", $deletedRows);
+        }
+
+        return Responses::Success("Product cat relationship deleted with sucess!", $deletedRows);
     }
 }

@@ -5,6 +5,8 @@ namespace App\Http\Controllers\api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Responses;
+use App\Models\Categories;
+use App\Models\ProductHasCat;
 use App\Services\Categories\CategoriesStoreData;
 use DB;
 
@@ -65,6 +67,9 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $relationships = ProductHasCat::where('id_category', $id)->delete();
+        Categories::find($id)->delete();
+
+        return Responses::Success("Category {$id} deleted! {$relationships} deleted relationships!", $relationships);
     }
 }

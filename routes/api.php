@@ -40,6 +40,10 @@ Route::prefix('v1')->group(function () {
 
         Route::post('products/relationships/category/{id}', [ProductHasCatController::class, 'store']);
 
+        Route::delete('products/relationships/category/{id}', [ProductHasCatController::class, 'destroy']);
+
         Route::post('categories', [CategoryController::class, 'store']);
+
+        Route::delete('categories/{id}', [CategoryController::class, 'destroy']);
     });
 });
