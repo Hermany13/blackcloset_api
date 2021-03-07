@@ -21,8 +21,13 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('v1')->group(function () {
     Route::prefix('user')->group(function () {
         Route::post('login', [AuthController::class, 'authenticate']);
-
         Route::post('register', [AuthController::class, 'register']);
+
+        Route::middleware('jwt.verify')->group(function () {
+            Route::middleware('role.verify')->group(function () {
+                Route::post('register/admin', [AuthController::class, 'registerAdmin']);
+            });
+        });
     });
 
     Route::prefix('products')->group(function () {
@@ -31,16 +36,18 @@ Route::prefix('v1')->group(function () {
         Route::get('/{id}', [ProductsController::class, 'show']);
 
         Route::middleware('jwt.verify')->group(function () {
-            Route::post('/', [ProductsController::class, 'store']);
+            Route::middleware('role.verify')->group(function () {
+                Route::post('/', [ProductsController::class, 'store']);
 
-            Route::put('/{id}', [ProductsController::class, 'update']);
+                Route::put('/{id}', [ProductsController::class, 'update']);
 
-            Route::delete('/{id}', [ProductsController::class, 'destroy']);
+                Route::delete('/{id}', [ProductsController::class, 'destroy']);
 
-            Route::prefix('relationships')->group(function () {
-                Route::post('/category/{id}', [ProductHasCatController::class, 'store']);
+                Route::prefix('relationships')->group(function () {
+                    Route::post('/category/{id}', [ProductHasCatController::class, 'store']);
 
-                Route::delete('/category/{id}', [ProductHasCatController::class, 'destroy']);
+                    Route::delete('/category/{id}', [ProductHasCatController::class, 'destroy']);
+                });
             });
         });
     });
@@ -51,11 +58,13 @@ Route::prefix('v1')->group(function () {
         Route::get('/{id}', [CategoryController::class, 'show']);
 
         Route::middleware('jwt.verify')->group(function () {
-            Route::post('/', [CategoryController::class, 'store']);
+            Route::middleware('role.verify')->group(function () {
+                Route::post('/', [CategoryController::class, 'store']);
 
-            Route::put('/{id}', [CategoryController::class, 'update']);
+                Route::put('/{id}', [CategoryController::class, 'update']);
 
-            Route::delete('/{id}', [CategoryController::class, 'destroy']);
+                Route::delete('/{id}', [CategoryController::class, 'destroy']);
+            });
         });
     });
 
@@ -65,9 +74,11 @@ Route::prefix('v1')->group(function () {
         Route::get('/{id}', [ColorsController::class, 'show']);
 
         Route::middleware('jwt.verify')->group(function () {
-            Route::post('/', [ColorsController::class, 'store']);
+            Route::middleware('role.verify')->group(function () {
+                Route::post('/', [ColorsController::class, 'store']);
 
-            Route::put('/{id}', [ColorsController::class, 'update']);
+                Route::put('/{id}', [ColorsController::class, 'update']);
+            });
         });
     });
 });
