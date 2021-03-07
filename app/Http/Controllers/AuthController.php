@@ -56,6 +56,40 @@ class AuthController extends Controller
                 'name' => $request->get('name'),
                 'email' => $request->get('email'),
                 'password' => Hash::make($request->get('password')),
+                'role' => 1
+            ]);
+
+            $token = JWTAuth::fromUser($user);
+
+            return response()->json(compact('user', 'token'), 201);
+        } catch (Exception $e) {
+            return response()->json(['msg' => 'Unknow error', 'devMsg' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Register a new user and generate token
+     *
+     * @param Request $request
+     */
+    public function registerAdmin(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'name' => 'required|string|max:255',
+                'email' => 'required|string|email|max:255|unique:users',
+                'password' => 'required|string|min:6|confirmed',
+            ]);
+
+            if ($validator->fails()) {
+                throw new Exception($validator->errors()->toJson(), 400);
+            }
+
+            $user = User::create([
+                'name' => $request->get('name'),
+                'email' => $request->get('email'),
+                'password' => Hash::make($request->get('password')),
+                'role' => 0,
             ]);
 
             $token = JWTAuth::fromUser($user);
