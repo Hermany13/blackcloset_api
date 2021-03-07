@@ -41,6 +41,8 @@ Route::prefix('v1')->group(function () {
 
                 Route::put('/{id}', [ProductsController::class, 'update']);
 
+                Route::put('/setoffer/{id}', [ProductsController::class, 'setOffer']);
+
                 Route::delete('/{id}', [ProductsController::class, 'destroy']);
 
                 Route::prefix('relationships')->group(function () {
