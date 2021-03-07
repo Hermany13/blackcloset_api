@@ -1,10 +1,10 @@
 <?php
 
 use App\Http\Controllers\api\CategoryController;
+use App\Http\Controllers\api\ColorsController;
 use App\Http\Controllers\api\ProductHasCatController;
 use App\Http\Controllers\API\ProductsController;
 use App\Http\Controllers\AuthController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,33 +19,55 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::prefix('v1')->group(function () {
-    Route::post('login', [AuthController::class, 'authenticate']);
+    Route::prefix('user')->group(function () {
+        Route::post('login', [AuthController::class, 'authenticate']);
 
-    Route::post('register', [AuthController::class, 'register']);
+        Route::post('register', [AuthController::class, 'register']);
+    });
 
-    Route::get('products', [ProductsController::class, 'index']);
+    Route::prefix('products')->group(function () {
+        Route::get('/', [ProductsController::class, 'index']);
 
-    Route::get('products/{id}', [ProductsController::class, 'show']);
+        Route::get('/{id}', [ProductsController::class, 'show']);
 
-    Route::get('categories', [CategoryController::class, 'index']);
+        Route::middleware('jwt.verify')->group(function () {
+            Route::post('/', [ProductsController::class, 'store']);
 
-    Route::get('categories/{id}', [CategoryController::class, 'show']);
+            Route::put('/{id}', [ProductsController::class, 'update']);
 
-    Route::middleware('jwt.verify')->group(function () {
-        Route::post('products', [ProductsController::class, 'store']);
+            Route::delete('/{id}', [ProductsController::class, 'destroy']);
 
-        Route::put('products/{id}', [ProductsController::class, 'update']);
+            Route::prefix('relationships')->group(function () {
+                Route::post('/category/{id}', [ProductHasCatController::class, 'store']);
 
-        Route::delete('products/{id}', [ProductsController::class, 'destroy']);
+                Route::delete('/category/{id}', [ProductHasCatController::class, 'destroy']);
+            });
+        });
+    });
 
-        Route::post('products/relationships/category/{id}', [ProductHasCatController::class, 'store']);
+    Route::prefix('categories')->group(function () {
+        Route::get('/', [CategoryController::class, 'index']);
 
-        Route::delete('products/relationships/category/{id}', [ProductHasCatController::class, 'destroy']);
+        Route::get('/{id}', [CategoryController::class, 'show']);
 
-        Route::post('categories', [CategoryController::class, 'store']);
+        Route::middleware('jwt.verify')->group(function () {
+            Route::post('/', [CategoryController::class, 'store']);
 
-        Route::put('categories/{id}', [CategoryController::class, 'update']);
+            Route::put('/{id}', [CategoryController::class, 'update']);
 
-        Route::delete('categories/{id}', [CategoryController::class, 'destroy']);
+            Route::delete('/{id}', [CategoryController::class, 'destroy']);
+        });
+    });
+
+    Route::prefix('colors')->group(function () {
+        Route::get('/', [ColorsController::class, 'index']);
+
+        Route::get('/{id}', [ColorsController::class, 'show']);
+
+        Route::middleware('jwt.verify')->group(function () {
+            Route::post('/', [ColorsController::class, 'store']);
+
+            Route::put('/{id}', [ColorsController::class, 'update']);
+        });
     });
 });
