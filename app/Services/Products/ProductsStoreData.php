@@ -15,7 +15,6 @@ class ProductsStoreData
             'price' => $data['price'],
             'offerPrice' => $data['offerPrice'],
             'availability' => $data['availability'],
-            'status' => $data['status'],
             'parcels' => $data['parcels'],
             'description' => $data['description'],
             'image' => $data['image'],

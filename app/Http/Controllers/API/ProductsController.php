@@ -98,8 +98,6 @@ class ProductsController extends Controller
                 'name' => $data['name'],
                 'slug' => $data['slug'],
                 'price' => $data['price'],
-                'availability' => $data['availability'],
-                'status' => $data['status'],
                 'parcels' => $data['parcels'],
                 'description' => $data['description'],
                 'image' => $data['image'],

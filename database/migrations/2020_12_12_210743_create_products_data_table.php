@@ -19,8 +19,7 @@ class CreateProductsDataTable extends Migration
             $table->string('slug');
             $table->float('price')->nullable();
             $table->float('offerPrice')->default(0);
-            $table->boolean('availability')->default(1);
-            $table->integer('status');
+            $table->integer('status')->default(0);
             $table->integer('parcels');
             $table->string('description');
             $table->string('image');

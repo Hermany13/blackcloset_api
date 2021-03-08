@@ -20,6 +20,7 @@ class CreateProductStockTable extends Migration
             $table->bigInteger('id_size')->unsigned();
             $table->integer('quantity');
             $table->string('img_color');
+            $table->integer('status');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();
 

@@ -4,6 +4,7 @@ use App\Http\Controllers\api\CategoryController;
 use App\Http\Controllers\api\ColorsController;
 use App\Http\Controllers\api\ProductHasCatController;
 use App\Http\Controllers\API\ProductsController;
+use App\Http\Controllers\api\ProductStockController;
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 
@@ -49,6 +50,20 @@ Route::prefix('v1')->group(function () {
                     Route::post('/category/{id}', [ProductHasCatController::class, 'store']);
 
                     Route::delete('/category/{id}', [ProductHasCatController::class, 'destroy']);
+                });
+            });
+        });
+
+        Route::prefix('stock')->group(function () {
+            Route::get('/{id}', [ProductStockController::class, 'show']);
+
+            Route::get('/', [ProductStockController::class, 'index']);
+
+            Route::middleware('jwt.verify')->group(function () {
+                Route::middleware('role.verify')->group(function () {
+                    Route::post('/{id}', [ProductStockController::class, 'store']);
+
+                    Route::put('/{id}', [ProductStockController::class, 'update']);
                 });
             });
         });
