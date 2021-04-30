@@ -3,7 +3,7 @@
 use App\Http\Controllers\api\CategoryController;
 use App\Http\Controllers\api\ColorsController;
 use App\Http\Controllers\api\ProductHasCatController;
-use App\Http\Controllers\API\ProductsController;
+use App\Http\Controllers\api\ProductsController;
 use App\Http\Controllers\api\ProductStockController;
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
