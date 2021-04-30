@@ -16,7 +16,6 @@ class Products extends Model
         'slug',
         'price',
         'offerPrice',
-        'availability',
         'status',
         'parcels',
         'description',
