@@ -14,7 +14,6 @@ class ProductsStoreData
             'slug' => Str::slug($data['name'], '-'),
             'price' => $data['price'],
             'offerPrice' => $data['offerPrice'],
-            'availability' => $data['availability'],
             'parcels' => $data['parcels'],
             'description' => $data['description'],
             'image' => $data['image'],
