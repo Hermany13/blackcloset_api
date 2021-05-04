@@ -4,6 +4,7 @@ namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Responses;
+use App\Models\Products;
 use App\Services\Categories\ProductHasCatStoreData;
 use App\Services\Products\ProductsStoreData;
 use Illuminate\Http\Request;
@@ -19,6 +20,24 @@ class ProductsController extends Controller
     public function index()
     {
         $products = DB::table('products_data')->where('status', '1')->get();
+
+        $auxProd = [];
+        foreach ($products as $product) {
+            $relationships = DB::table('product_has_cat')->where('id_product', $product->id)->get();
+            $auxCat = [];
+            foreach ($relationships as $relation) {
+                array_push($auxCat, DB::table('categories')->where('id', $relation->id_category)->get()[0]);
+            }
+            $product->categories = $auxCat;
+            array_push($auxProd, $product);
+        }
+
+        return Responses::Success("Products successfully redeemed!", $auxProd);
+    }
+
+    public function latest()
+    {
+        $products = Products::orderBy('id', 'DESC')->paginate(6);
 
         $auxProd = [];
         foreach ($products as $product) {
