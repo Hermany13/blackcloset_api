@@ -34,6 +34,8 @@ Route::prefix('v1')->group(function () {
     Route::prefix('products')->group(function () {
         Route::get('/', [ProductsController::class, 'index']);
 
+        Route::get('/latest', [ProductsController::class, 'latest']);
+
         Route::get('/{id}', [ProductsController::class, 'show']);
 
         Route::middleware('jwt.verify')->group(function () {
